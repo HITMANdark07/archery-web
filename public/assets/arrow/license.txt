@@ -1,0 +1,11 @@
+Model Information:
+* title:	Arrow
+* source:	https://sketchfab.com/3d-models/arrow-2914418934324d2684712c1de3c75b16
+* author:	JJ Chalupnik (https://sketchfab.com/jjchalupnik)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Arrow" (https://sketchfab.com/3d-models/arrow-2914418934324d2684712c1de3c75b16) by JJ Chalupnik (https://sketchfab.com/jjchalupnik) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
