@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Engine, Scene, FreeCamera, HemisphericLight, Vector3, SceneLoader, Color4, Mesh, MeshBuilder, StandardMaterial, Color3 } from '@babylonjs/core';
+import { Engine, Scene, FreeCamera, HemisphericLight, Vector3, SceneLoader, Color4, Mesh, MeshBuilder, StandardMaterial, Color3, AbstractMesh } from '@babylonjs/core';
 
 // Import GLTF loader - this registers the loader automatically
 import '@babylonjs/loaders';
@@ -144,35 +144,53 @@ export default function ArcheryGameScene() {
     ground.position.y = 0;
 
     // Load assets
+    let bowRef: AbstractMesh | null = null;
+    let targetRef: AbstractMesh | null = null;
+
     Promise.all([
       loadAsset(
         'recurve_bow', 
         'scene.gltf', 
-        new Vector3(0, 1.4, 0.5), // Bow in front of camera, slightly lower
-        new Vector3(0, 0, 0), 
+        new Vector3(0, 0, 0), // Will be repositioned after parenting
+        new Vector3(0, 0, 0), // Will be set after parenting
         'Recurve Bow', 
-        0.8
+        0.8 // Scale for visibility
       ),
       loadAsset(
         'target', 
         'scene.gltf', 
-        new Vector3(0, 1.5, 20), // Target far away, at eye level
-        new Vector3(0, 0, 0), 
+        new Vector3(0, 1.5, 12), // Target closer (12 units away instead of 20)
+        new Vector3(0, Math.PI/2, 0), 
         'Target', 
-        3
+        4 // Larger scale so it's clearly visible
       ),
     ]).then((results) => {
       setLoading(false);
       console.log('Game scene loaded!');
       
       // Store references for later use
-      const bow = results[0];
-      const target = results[1];
+      bowRef = results[0];
+      targetRef = results[1];
       
-      if (bow) {
-        // Make bow parented to camera (so it moves with camera)
-        // For now, just position it. We'll add parent-child relationship later if needed
-        console.log('Bow ready for shooting mechanics');
+      if (bowRef && bowRef instanceof Mesh) {
+        console.log(`✅ Bow positioned at: ${bowRef.position.toString()}`);
+        console.log(`✅ Bow scale: ${bowRef.scaling.toString()}`);
+        
+        // Parent bow to camera so it moves with camera rotation
+        bowRef.setParent(camera);
+        
+        // Position bow centered and at proper height (like holding it)
+        // x: 0 (centered), y: -0.5 (lower in view), z: 1.2 (in front of camera)
+        bowRef.position = new Vector3(0, -0.2, 1.2);
+        
+        // Start with simpler rotation - make it vertical first, then adjust Y to face target
+        // Z: Math.PI/2 rotates it to vertical, Y: 0 faces it forward initially
+        bowRef.rotation = new Vector3(0, Math.PI/12, Math.PI / 2); // Vertical orientation, facing forward
+      }
+      
+      if (targetRef && targetRef instanceof Mesh) {
+        console.log(`✅ Target positioned at: ${targetRef.position.toString()}`);
+        console.log(`✅ Target scale: ${targetRef.scaling.toString()}`);
       }
     });
 
